@@ -191,16 +191,30 @@ matchto <- emDict$r_encoding
 description <- emDict$description
 
 # get text data
-raw_usermedia <- tweet
+raw_usermedia_19 <- tweet %>%
+  filter(File == "ES_2019.csv")
+
+raw_usermedia_21 <- tweet %>%
+  filter(File == "ES_2021.csv")
+
+
 # convert to a format we can work with
-usermedia <- raw_usermedia %>% 
+usermedia_19 <- raw_usermedia_19 %>% 
+  mutate(text = iconv(tweet, from = "latin1", to = "ascii", sub = "byte"))
+# convert to a format we can work with
+usermedia_21 <- raw_usermedia_21 %>% 
   mutate(text = iconv(tweet, from = "latin1", to = "ascii", sub = "byte"))
 
 ## ---- most used emoji ----
 # rank emojis by occurence in data
 options(stringsAsFactors = FALSE)
 
-rank <- emojis_matching(usermedia$text, matchto, description) %>% 
+rank_19 <- emojis_matching(usermedia_19$text, matchto, description) %>% 
+  group_by(description) %>% 
+  summarise(n = sum(count, na.rm = TRUE)) %>%
+  arrange(-n)
+
+rank_21 <- emojis_matching(usermedia_21$text, matchto, description) %>% 
   group_by(description) %>% 
   summarise(n = sum(count, na.rm = TRUE)) %>%
   arrange(-n)
@@ -209,34 +223,43 @@ rank <- emojis_matching(usermedia$text, matchto, description) %>%
 #### 05_Occurrence of emojis ####
 # *****************************************************************************
 
-head(rank, 10)
+head(rank_19, 10)
+head(rank_21, 10)
 
-rank$rank <- seq(1,dim(rank)[1],1)
-rank_top10 <- subset(rank, rank <= 10)
+rank_19$rank <- seq(1,dim(rank_19)[1],1)
+rank_19_top10 <- subset(rank_19, rank <= 10)
+
+rank_21$rank <- seq(1,dim(rank_21)[1],1)
+rank_21_top10 <- subset(rank_21, rank <= 10)
 
 xlab <- 'Rank' 
 ylab <- 'Overall Occurrence'
 
 setwd("../F2BD Literature Review/Figures/_emoji/")
-imgs <- lapply(paste0(rank_top10$description, '.png'), png::readPNG)
-g <- lapply(imgs, grid::rasterGrob)
+imgs_19 <- lapply(paste0(rank_19_top10$description, '.png'), png::readPNG)
+g_19 <- lapply(imgs_19, grid::rasterGrob)
 
-k <- 0.20 * (10/nrow(rank_top10)) * max(rank_top10$n)
-rank_top10$xsize <- k
-rank_top10$ysize <- k
-rank_top10$ysize <- k * (rank_top10$n / max(rank_top10$n))
-rank_top10$ysize <- 149
+imgs_21 <- lapply(paste0(rank_21_top10$description, '.png'), png::readPNG)
+g_21 <- lapply(imgs_21, grid::rasterGrob)
 
 
-g1 <- ggplot(data = rank_top10, aes(x = rank, y = n)) +
+# 2019
+k <- 0.20 * (10/nrow(rank_19_top10)) * max(rank_19_top10$n)
+rank_19_top10$xsize <- k
+rank_19_top10$ysize <- k
+rank_19_top10$ysize <- k * (rank_19_top10$n / max(rank_19_top10$n))
+rank_19_top10$ysize <- 82.8
+
+
+g1 <- ggplot(data = rank_19_top10, aes(x = rank, y = n)) +
   geom_bar(stat = 'identity', fill = 'dodgerblue4') +
   xlab(xlab) + ylab(ylab) +
   mapply(function(x, y, i) {
-    annotation_custom(g[[i]], xmin = x-0.5*rank_top10$xsize[i], xmax = x+0.5*rank_top10$xsize[i], 
-                      ymin = y-0.5*rank_top10$ysize[i], ymax = y+0.5*rank_top10$ysize[i])},
-    rank_top10$rank, rank_top10$n, seq_len(nrow(rank_top10))) +
-  scale_x_continuous(expand = c(0, 0), breaks = seq(1, nrow(rank_top10), 1), labels = seq(1, nrow(rank_top10), 1)) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 1.10 * max(rank_top10$n)))+
+    annotation_custom(g_19[[i]], xmin = x-0.5*rank_19_top10$xsize[i], xmax = x+0.5*rank_19_top10$xsize[i], 
+                      ymin = y-0.5*rank_19_top10$ysize[i], ymax = y+0.5*rank_19_top10$ysize[i])},
+    rank_19_top10$rank, rank_19_top10$n, seq_len(nrow(rank_19_top10))) +
+  scale_x_continuous(expand = c(0, 0), breaks = seq(1, nrow(rank_19_top10), 1), labels = seq(1, nrow(rank_19_top10), 1)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1.10 * max(rank_19_top10$n)))+
   theme_minimal() +
   theme(plot.title = element_text(face = "bold",
                                   size = 20,
@@ -275,11 +298,73 @@ g1 <- ggplot(data = rank_top10, aes(x = rank, y = n)) +
         legend.text = element_text(size = 12,
                                    family = ""),
         legend.title = element_blank()) +
-  labs(title = "Occurrence of emojis",
+  labs(title = "Occurrence of emojis (2019)",
        x = "Rank",
        y = "Overall Occurrence",
        caption = paste(" ")) +
-  ggsave(paste0("01", "_", "emoji_occurrence", ".jpeg"), 
+  ggsave(paste0("01", "_", "emoji_occurrence_19", ".jpeg"), 
+         width = 10, height = 6)
+
+# 2021
+k <- 0.20 * (10/nrow(rank_21_top10)) * max(rank_21_top10$n)
+rank_21_top10$xsize <- k
+rank_21_top10$ysize <- k
+rank_21_top10$ysize <- k * (rank_21_top10$n / max(rank_21_top10$n))
+rank_21_top10$ysize <- 82.8
+
+
+g1 <- ggplot(data = rank_21_top10, aes(x = rank, y = n)) +
+  geom_bar(stat = 'identity', fill = 'dodgerblue4') +
+  xlab(xlab) + ylab(ylab) +
+  mapply(function(x, y, i) {
+    annotation_custom(g_21[[i]], xmin = x-0.5*rank_21_top10$xsize[i], xmax = x+0.5*rank_21_top10$xsize[i], 
+                      ymin = y-0.5*rank_21_top10$ysize[i], ymax = y+0.5*rank_21_top10$ysize[i])},
+    rank_21_top10$rank, rank_21_top10$n, seq_len(nrow(rank_21_top10))) +
+  scale_x_continuous(expand = c(0, 0), breaks = seq(1, nrow(rank_21_top10), 1), labels = seq(1, nrow(rank_21_top10), 1)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1.10 * max(rank_21_top10$n)))+
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold",
+                                  size = 20,
+                                  family = "Arial"),
+        plot.subtitle = element_text(size = 12,
+                                     face = "plain", 
+                                     family = "Arial"),
+        plot.caption = element_text(hjust = 0, 
+                                    face = "plain", 
+                                    family = "Arial",
+                                    size = 8,
+                                    colour = "#777777"),
+        panel.background = element_rect(fill = "white", 
+                                        colour = "white", 
+                                        size = 0.15, 
+                                        linetype = "solid"),
+        panel.grid.major = element_line(size = 0.15, 
+                                        linetype = 'solid',
+                                        colour = "gray50"), 
+        panel.grid.minor = element_line(size = 0.15, 
+                                        linetype = 'solid',
+                                        colour = "gray50"), 
+        axis.title.x = (element_text(size = 16,
+                                     family = "Arial")),
+        axis.title.y = (element_text(size =16,
+                                     family = "Arial")),
+        element_line(linetype = "dotted",
+                     colour = "gray99",
+                     size = .1),
+        axis.text.x = element_text(angle = 0,
+                                   hjust = 0.5,
+                                   size = 12, 
+                                   family = ""),
+        axis.text.y = element_text(size = 9,
+                                   family = ""),
+        legend.text = element_text(size = 12,
+                                   family = ""),
+        legend.title = element_blank()) +
+  labs(title = "Occurrence of emojis (2021)",
+       x = "Rank",
+       y = "Overall Occurrence",
+       caption = paste(" ")) +
+  ggsave(paste0("01", "_", "emoji_occurrence_21", ".jpeg"), 
          width = 10, height = 6)
 
 
@@ -287,52 +372,103 @@ g1 <- ggplot(data = rank_top10, aes(x = rank, y = n)) +
 #### 06_Tweets with highest number of RT ####
 # *****************************************************************************
 
-tweet_score <- tweet %>%
+tweet_score_19 <- tweet %>%
+  filter(File=="ES_2019.csv") %>%
   select(user_id, username, tweet, replies_count, retweets_count, likes_count)
 
+tweet_score_21 <- tweet %>%
+  filter(File=="ES_2021.csv") %>%
+  select(user_id, username, tweet, replies_count, retweets_count, likes_count)
+
+# 2019
+
 # Sort db based on retweets
-tweet_rt <- tweet_score %>%
+tweet_rt_19 <- tweet_score_19 %>%
   arrange(-retweets_count) %>%
   select(username, tweet, retweets_count) %>%
   mutate(Retweets = as.character(retweets_count)) %>%
   slice(1:15) %>%
   select(username, tweet, Retweets)
 
-dust(tweet_rt) %>%
+dust(tweet_rt_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rt.html")
+  save_kable("tweet_rt_19.html")
 
 # Sort db based on replies
-tweet_rp <- tweet_score %>%
+tweet_rp_19 <- tweet_score_19 %>%
   arrange(-replies_count) %>%
   select(username, tweet, replies_count) %>%
   mutate(Replies = as.character(replies_count)) %>%
   slice(1:15) %>%
   select(username, tweet, Replies)
 
-dust(tweet_rp) %>%
+dust(tweet_rp_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rp.html")
+  save_kable("tweet_rp_19.html")
 
 
 # Sort db based on likes
-tweet_lk <- tweet_score %>%
+tweet_lk_19 <- tweet_score_19 %>%
   arrange(-likes_count) %>%
   select(username, tweet, likes_count) %>%
   mutate(Likes = as.character(likes_count)) %>%
   slice(1:15) %>%
   select(username, tweet, Likes)
 
-dust(tweet_lk) %>%
+dust(tweet_lk_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_lk.html")
+  save_kable("tweet_lk_19.html")
 
+# 2021
+
+# Sort db based on retweets
+tweet_rt_21 <- tweet_score_21 %>%
+  arrange(-retweets_count) %>%
+  select(username, tweet, retweets_count) %>%
+  mutate(Retweets = as.character(retweets_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Retweets)
+
+dust(tweet_rt_21) %>%
+  kable(align = "lll",
+        format = "html") %>%
+  kable_styling() %>%
+  save_kable("tweet_rt_21.html")
+
+# Sort db based on replies
+tweet_rp_21 <- tweet_score_21 %>%
+  arrange(-replies_count) %>%
+  select(username, tweet, replies_count) %>%
+  mutate(Replies = as.character(replies_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Replies)
+
+dust(tweet_rp_21) %>%
+  kable(align = "lll",
+        format = "html") %>%
+  kable_styling() %>%
+  save_kable("tweet_rp_21.html")
+
+
+# Sort db based on likes
+tweet_lk_21 <- tweet_score_21 %>%
+  arrange(-likes_count) %>%
+  select(username, tweet, likes_count) %>%
+  mutate(Likes = as.character(likes_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Likes)
+
+dust(tweet_lk_21) %>%
+  kable(align = "lll",
+        format = "html") %>%
+  kable_styling() %>%
+  save_kable("tweet_lk_21.html")
 
 
 
