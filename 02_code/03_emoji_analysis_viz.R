@@ -48,7 +48,7 @@ setwd("../../../../Dropbox/F2BD Literature Review/")
 # *****************************************************************************
 #### 03_Load_data ####
 # *****************************************************************************
-tweet<-read.csv("Data/database_sp_cleaned_topics.csv")
+tweet<-read.csv("Data/database_sp_cleaned_topics.csv", encoding = "UTF-8")
 
 # *****************************************************************************
 #### 04_Extract emojis from tweets ####
@@ -294,7 +294,9 @@ tweet_score <- tweet %>%
 tweet_rt <- tweet_score %>%
   arrange(-retweets_count) %>%
   select(username, tweet, retweets_count) %>%
-  slice(1:15)
+  mutate(Retweets = as.character(retweets_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Retweets)
 
 dust(tweet_rt) %>%
   kable(align = "lll",
@@ -306,7 +308,9 @@ dust(tweet_rt) %>%
 tweet_rp <- tweet_score %>%
   arrange(-replies_count) %>%
   select(username, tweet, replies_count) %>%
-  slice(1:15)
+  mutate(Replies = as.character(replies_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Replies)
 
 dust(tweet_rp) %>%
   kable(align = "lll",
@@ -314,17 +318,21 @@ dust(tweet_rp) %>%
   kable_styling() %>%
   save_kable("tweet_rp.html")
 
+
 # Sort db based on likes
 tweet_lk <- tweet_score %>%
   arrange(-likes_count) %>%
   select(username, tweet, likes_count) %>%
-  slice(1:15)
+  mutate(Likes = as.character(likes_count)) %>%
+  slice(1:15) %>%
+  select(username, tweet, Likes)
 
 dust(tweet_lk) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
   save_kable("tweet_lk.html")
+
 
 
 
