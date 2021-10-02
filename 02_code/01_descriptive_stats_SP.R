@@ -1,7 +1,8 @@
 #*****************************************************************************# 
 # Purpose: Plot time series of tweets, likes and retweets                     #
+# Database: Second selection & Only Spanish                                   #
 #                                                                             #
-# Created: June 09, 2021                                                      #
+# Created: October 01, 2021                                                   #
 # Depends on:                                                                 #
 #   Author: Manuel Cardona                                                    # 
 #   E-mail: mcardona@poverty-action.org                                       #
@@ -35,26 +36,18 @@ setwd("../../../../Dropbox/F2BD Literature Review/")
 # *****************************************************************************
 #### 03_Load_data ####
 # *****************************************************************************
-tweet <- read.csv("dataset_finale.csv")
+tweet <- read.csv("sentiment-emotion-analysis-sp.csv")
 es_2019 <- tweet %>%
   filter(File=="ES_2019.csv")
 es_2021 <- tweet %>%
   filter(File=="ES_2021.csv")
-pt_2019 <- tweet %>%
-  filter(File=="PT_2019.csv")
-pt_2021 <- tweet %>%
-  filter(File=="PT_2021.csv")
-
-dt_2019 <- rbind(es_2019, pt_2019)
-dt_2021 <- rbind(es_2021, pt_2021)
-
 
 # *****************************************************************************
 #### 04_Number of tweets ####
 # *****************************************************************************
 
-dt_2019 <- as.data.frame(table(dt_2019$date))
-dt_2021 <- as.data.frame(table(dt_2021$date))
+dt_2019 <- as.data.frame(table(es_2019$date))
+dt_2021 <- as.data.frame(table(es_2021$date))
 
 dt_2019<-dt_2019[!(dt_2019$Freq==0),]
 dt_2021<-dt_2021[!(dt_2021$Freq==0),]
@@ -75,7 +68,6 @@ dt_2021_freq <- xts(x = dt_2021$Freq, order.by = dt_2021$Date)
 
 dt_2019_prop <- xts(x = dt_2019$Proportion, order.by = dt_2019$Date)
 dt_2021_prop <- xts(x = dt_2021$Proportion, order.by = dt_2021$Date)
-
 
 # Number of Tweets 2019
 freq_2019 <- dygraph(dt_2019_freq, main = "Number of Tweets, 2019") %>%
@@ -98,51 +90,50 @@ freq_2019 <- dygraph(dt_2019_freq, main = "Number of Tweets, 2019") %>%
                       gridLineColor = "grey") %>%
            dyAxis(name = "y",
                   label = "%")
-
+         
 # Number of Tweets 2021
 freq_2021 <- dygraph(dt_2021_freq, main = "Number of Tweets, 2021") %>%
   dyOptions( stepPlot=TRUE,
-             fillGraph=TRUE,
-             colors = "#0e888f",
-             axisLabelFontSize = 10,
-             drawGrid = TRUE,
-             gridLineColor = "grey") %>%
+              fillGraph=TRUE,
+              colors = "#0e888f",
+              axisLabelFontSize = 10,
+              drawGrid = TRUE,
+              gridLineColor = "grey") %>%
   dyAxis(name = "y",
-         label = "Number of tweets")
-
-          # Proportion of Tweets 2019
-          prop_2021 <- dygraph(dt_2021_prop, main = "Proportion of tweets per day, 2021") %>%
-            dyOptions( stepPlot=TRUE,
-                       fillGraph=TRUE,
-                       colors = "#0e888f",
-                       axisLabelFontSize = 10,
-                       drawGrid = TRUE,
-                       gridLineColor = "grey") %>%
-            dyAxis(name = "y",
-                   label = "%")
-
+        label = "Number of tweets")
+         
+         # Proportion of Tweets 2019
+         prop_2021 <- dygraph(dt_2021_prop, main = "Proportion of tweets per day, 2021") %>%
+           dyOptions( stepPlot=TRUE,
+                      fillGraph=TRUE,
+                      colors = "#0e888f",
+                      axisLabelFontSize = 10,
+                      drawGrid = TRUE,
+                      gridLineColor = "grey") %>%
+           dyAxis(name = "y",
+                  label = "%")
+         
 # *****************************************************************************
 #### 04_retweets ####
 # *****************************************************************************
-rt_2019 <- rbind(es_2019, pt_2019)
+rt_2019 <- rbind(es_2019)
 rt_2019 <- rt_2019 %>%
-    select(date, retweets_count) %>%
-    rename(Date = date,
-           Retweet = retweets_count) %>%
-  group_by(Date) %>%
-  summarize(mean(Retweet)) %>%
-  rename(Retweets = "mean(Retweet)")
+ select(date, retweets_count) %>%
+ rename(Date = date,
+        Retweet = retweets_count) %>%
+ group_by(Date) %>%
+ summarize(mean(Retweet)) %>%
+ rename(Retweets = "mean(Retweet)")
 
-rt_2021 <- rbind(es_2021, pt_2021)
+rt_2021 <- rbind(es_2021)
 rt_2021 <- rt_2021 %>%
-  select(date, retweets_count) %>%
-  rename(Date = date,
-         Retweet = retweets_count) %>%
-  group_by(Date) %>%
-  summarize(mean(Retweet)) %>%
-  rename(Retweets = "mean(Retweet)")
-
-
+ select(date, retweets_count) %>%
+ rename(Date = date,
+        Retweet = retweets_count) %>%
+ group_by(Date) %>%
+ summarize(mean(Retweet)) %>%
+ rename(Retweets = "mean(Retweet)")
+         
 # Switch to time-based variables
 rt_2019$Date <- as.Date(rt_2019$Date)
 rt_2021$Date <- as.Date(rt_2021$Date)
@@ -177,7 +168,7 @@ retweet_2021 <- dygraph(rt_2021, main = "Retweets (mean), 2021") %>%
 # *****************************************************************************
 #### 04_likes ####
 # *****************************************************************************
-lk_2019 <- rbind(es_2019, pt_2019)
+lk_2019 <- rbind(es_2019)
 lk_2019 <- lk_2019 %>%
   select(date, likes_count) %>%
   rename(Date = date,
@@ -186,7 +177,7 @@ lk_2019 <- lk_2019 %>%
   summarize(mean(Likes)) %>%
   rename(Likes = "mean(Likes)")
 
-lk_2021 <- rbind(es_2021, pt_2021)
+lk_2021 <- rbind(es_2021)
 lk_2021 <- lk_2021 %>%
   select(date, likes_count) %>%
   rename(Date = date,
@@ -194,7 +185,6 @@ lk_2021 <- lk_2021 %>%
   group_by(Date) %>%
   summarize(mean(Likes)) %>%
   rename(Likes = "mean(Likes)")
-
 
 # Switch to time-based variables
 lk_2019$Date <- as.Date(lk_2019$Date)
