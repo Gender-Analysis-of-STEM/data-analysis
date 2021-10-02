@@ -471,21 +471,6 @@ dust(tweet_lk_21) %>%
   save_kable("tweet_lk_21.html")
 
 
-
-
-
-## ---- tweets with most emojis ----
-tweets <- emojis_matching(usermedia$text, matchto, description) %>% 
-  group_by(text) %>% 
-  summarise(n = sum(count, na.rm = TRUE)) %>%
-  # I add the time created because it makes it easiert to look up certain tweets
-  merge(usermedia, by = "text") %>% 
-  select(text, n, created_at) %>%
-  arrange(-n)
-
-mean(tweets$n, na.rm = TRUE)
-
-
 ## ---- sentiment analysis with emojis ---- 
 # reference website
 url <- "http://kt.ijs.si/data/Emoji_sentiment_ranking/index.html"
@@ -499,6 +484,12 @@ emojis_raw <- url %>%
 names(emojis_raw) <- c("char", "unicode", "occurrences", "position", "negative", 
                        "neutral", "positive", "sentiment_score", "description", 
                        "block")
+
+
+
+
+
+
 
 # change numeric unicode to character unicode to be able to match with emDict 
 emojis <- emojis_raw %>%
@@ -519,12 +510,12 @@ new_matchto <- emojis_merged$r_encoding
 new_description <- emojis_merged$description.x
 sentiment <- emojis_merged$sentiment_score
 
-sentiments <- emojis_matching(usermedia$text, new_matchto, new_description, sentiment) %>%
+sentiments <- emojis_matching(usermedia_19$text, new_matchto, new_description, sentiment) %>%
   mutate(sentiment = count * as.numeric(sentiment)) %>%
   group_by(text) %>% 
   summarise(sentiment_score = sum(sentiment, na.rm = TRUE))
 
-usermedia_merged <- usermedia %>% 
+usermedia_merged <- usermedia_19 %>% 
   select(text, created_at) %>% 
   merge(sentiments, by = "text", all.x = TRUE)
 # some tweets don't have sentiment scores
@@ -541,7 +532,7 @@ usermedia_merged %>%
 
 ## ---- emojis associated with words in tweets ----
 # tweets
-raw_texts <- emojis_matching(usermedia$text, matchto, description) %>% 
+raw_texts <- emojis_matching(usermedia_19$text, matchto, description) %>% 
   select(-sentiment, -count) %>%
   mutate(text = cleanPosts(text)) %>%
   filter(text != "") %>% 
