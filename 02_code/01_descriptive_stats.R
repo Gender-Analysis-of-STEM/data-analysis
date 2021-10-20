@@ -35,15 +35,20 @@ setwd("../../../../Dropbox/F2BD Literature Review/")
 # *****************************************************************************
 #### 03_Load_data ####
 # *****************************************************************************
-tweet <- read.csv("dataset_finale.csv")
+tweet <- read.csv("Data/latinos.csv")
+
+tweet$year <- substr(tweet$created_at, 1, 4)
+tweet$lang <- substr(tweet$File, 4, 5)
+tweet$File <- paste(tweet$lang, tweet$year, sep = "")
+
 es_2019 <- tweet %>%
-  filter(File=="ES_2019.csv")
+  filter(File=="es2019")
 es_2021 <- tweet %>%
-  filter(File=="ES_2021.csv")
+  filter(File=="es2021")
 pt_2019 <- tweet %>%
-  filter(File=="PT_2019.csv")
+  filter(File=="pt2019")
 pt_2021 <- tweet %>%
-  filter(File=="PT_2021.csv")
+  filter(File=="pt2021")
 
 dt_2019 <- rbind(es_2019, pt_2019)
 dt_2021 <- rbind(es_2021, pt_2021)
