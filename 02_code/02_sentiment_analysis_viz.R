@@ -41,7 +41,7 @@ setwd("../Dropbox/F2BD Literature Review/")
 #### 03_Load_data ####
 # *****************************************************************************
 tweet<-read.csv("Data/sentiment-emotion-analysis-sp.csv")
-thread<-read.csv("Data/sentiment-emotion-analysis-sp-thread.csv")
+#thread<-read.csv("Data/sentiment-emotion-analysis-sp-thread.csv")
 
 palette<-paletteer_d("LaCroixColoR::paired")
 palette_2<-paletteer_d("rcartocolor::ag_Sunset")
