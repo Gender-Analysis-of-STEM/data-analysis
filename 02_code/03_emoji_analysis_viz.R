@@ -48,7 +48,23 @@ setwd("../../../../Dropbox/F2BD Literature Review/")
 # *****************************************************************************
 #### 03_Load_data ####
 # *****************************************************************************
-tweet<-read.csv("Data/database_sp_cleaned_topics.csv", encoding = "UTF-8")
+tweet<-read.csv("Data/latinos.csv", encoding = "UTF-8")
+
+tweet$year <- substr(tweet$created_at, 1, 4)
+tweet$lang <- substr(tweet$File, 4, 5)
+tweet$File <- paste(tweet$lang, tweet$year, sep = "")
+
+es_2019 <- tweet %>%
+  filter(File=="es2019")
+es_2021 <- tweet %>%
+  filter(File=="es2021")
+pt_2019 <- tweet %>%
+  filter(File=="pt2019")
+pt_2021 <- tweet %>%
+  filter(File=="pt2021")
+
+b_2019 <- rbind(es_2019, pt_2019)
+b_2021 <- rbind(es_2021, pt_2021)
 
 # *****************************************************************************
 #### 04_Extract emojis from tweets ####
@@ -183,19 +199,24 @@ emDict <- emDict_raw %>%
   # remove emojis with skin tones info, e.g. remove woman: light skin tone and only
   # keep woman
   filter(!grepl(":", description)) %>%
-  mutate(description = tolower(description)) %>%
-  mutate(unicode = as.u_char(unicode))
+  mutate(description = tolower(description)) 
 # all emojis with more than one unicode codepoint become NA 
 
-matchto <- emDict$r_encoding
-description <- emDict$description
+  matchto <- emDict$r_encoding
+  description <- emDict$description
 
 # get text data
 raw_usermedia_19 <- tweet %>%
-  filter(File == "ES_2019.csv")
+  filter(File == "pt2019")
 
 raw_usermedia_21 <- tweet %>%
-  filter(File == "ES_2021.csv")
+  filter(File == "pt2021")
+
+
+raw_usermedia_19 <- b_2019
+
+raw_usermedia_21 <- b_2021
+
 
 
 # convert to a format we can work with
@@ -248,7 +269,7 @@ k <- 0.20 * (10/nrow(rank_19_top10)) * max(rank_19_top10$n)
 rank_19_top10$xsize <- k
 rank_19_top10$ysize <- k
 rank_19_top10$ysize <- k * (rank_19_top10$n / max(rank_19_top10$n))
-rank_19_top10$ysize <- 82.8
+rank_19_top10$ysize <- 65
 
 
 g1 <- ggplot(data = rank_19_top10, aes(x = rank, y = n)) +
@@ -310,7 +331,7 @@ k <- 0.20 * (10/nrow(rank_21_top10)) * max(rank_21_top10$n)
 rank_21_top10$xsize <- k
 rank_21_top10$ysize <- k
 rank_21_top10$ysize <- k * (rank_21_top10$n / max(rank_21_top10$n))
-rank_21_top10$ysize <- 82.8
+rank_21_top10$ysize <- 65
 
 
 g1 <- ggplot(data = rank_21_top10, aes(x = rank, y = n)) +
@@ -373,11 +394,11 @@ g1 <- ggplot(data = rank_21_top10, aes(x = rank, y = n)) +
 # *****************************************************************************
 
 tweet_score_19 <- tweet %>%
-  filter(File=="ES_2019.csv") %>%
+  filter(File=="pt2019") %>%
   select(user_id, username, tweet, replies_count, retweets_count, likes_count)
 
 tweet_score_21 <- tweet %>%
-  filter(File=="ES_2021.csv") %>%
+  filter(File=="pt2021") %>%
   select(user_id, username, tweet, replies_count, retweets_count, likes_count)
 
 # 2019
@@ -394,7 +415,7 @@ dust(tweet_rt_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rt_19.html")
+  save_kable("tweet_rt_pt_19.html")
 
 # Sort db based on replies
 tweet_rp_19 <- tweet_score_19 %>%
@@ -408,7 +429,7 @@ dust(tweet_rp_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rp_19.html")
+  save_kable("tweet_rp_pt_19.html")
 
 
 # Sort db based on likes
@@ -423,7 +444,7 @@ dust(tweet_lk_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_lk_19.html")
+  save_kable("tweet_lk_pt_19.html")
 
 # 2021
 
@@ -439,7 +460,7 @@ dust(tweet_rt_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rt_21.html")
+  save_kable("tweet_rt_pt_21.html")
 
 # Sort db based on replies
 tweet_rp_21 <- tweet_score_21 %>%
@@ -453,7 +474,7 @@ dust(tweet_rp_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rp_21.html")
+  save_kable("tweet_rp_pt_21.html")
 
 
 # Sort db based on likes
@@ -468,7 +489,7 @@ dust(tweet_lk_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_lk_21.html")
+  save_kable("tweet_lk_pt_21.html")
 
 
 ## ---- sentiment analysis with emojis ---- 
