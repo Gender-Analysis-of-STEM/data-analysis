@@ -92,6 +92,7 @@ dust(tweet_rt_19) %>%
   kable_styling() %>%
   row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
   row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_rt_19$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
   save_kable("tweet_rt_pt_19.html")
 
 # Sort db based on replies
@@ -106,8 +107,9 @@ dust(tweet_rp_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
-  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_rp_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rp_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991")%>%
+  row_spec(which(tweet_rp_19$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
   save_kable("tweet_rp_pt_19.html")
 
 
@@ -123,8 +125,9 @@ dust(tweet_lk_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
-  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_lk_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_lk_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_lk_19$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
   save_kable("tweet_lk_pt_19.html")
 
 # 2021
@@ -141,9 +144,10 @@ dust(tweet_rt_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
-  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
-  save_kable("tweet_rt_sp_pt.html")
+  row_spec(which(tweet_rt_21$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_21$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_rt_21$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
+  save_kable("tweet_rt_pt_21.html")
 
 # Sort db based on replies
 tweet_rp_21 <- tweet_score_21 %>%
@@ -157,8 +161,9 @@ dust(tweet_rp_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
-  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_rp_21$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rp_21$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_rp_21$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
   save_kable("tweet_rp_pt_21.html")
 
 
@@ -173,8 +178,9 @@ tweet_lk_21 <- tweet_score_21 %>%
 dust(tweet_lk_21) %>%
   kable(align = "lll",
         format = "html") %>%
-  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
-  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_lk_21$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_lk_21$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  row_spec(which(tweet_lk_21$verified == "Unknown"), bold = F, color = "black", background = "#cdd1ce") %>%
   kable_styling() %>%
   save_kable("tweet_lk_pt_21.html")
 
