@@ -61,14 +61,15 @@ demog<-read.csv("Data/demog2019_2021_pt_sp.csv", encoding = "UTF-8")
 # *****************************************************************************
 
 tweet_score_19 <- tweet %>%
-  filter(File=="es2019") %>%
+  filter(File=="pt2019") %>%
   mutate(verified = case_when(user_verified == "True" ~ "Verified",
                               user_verified == "False" ~ "Not verified", 
                               user_verified == ""  ~ "Unknown")) %>%
   select(user_id, username, verified, tweet, replies_count, retweets_count, likes_count) 
 
+
 tweet_score_21 <- tweet %>%
-  filter(File=="es2021")  %>%
+  filter(File=="pt2021")  %>%
   mutate(verified = case_when(user_verified == "True" ~ "Verified",
                               user_verified == "False" ~ "Not verified", 
                               user_verified == ""  ~ "Unknown")) %>%
@@ -89,7 +90,9 @@ dust(tweet_rt_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rt_sp_19.html")
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  save_kable("tweet_rt_pt_19.html")
 
 # Sort db based on replies
 tweet_rp_19 <- tweet_score_19 %>%
@@ -103,7 +106,9 @@ dust(tweet_rp_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rp_sp_19.html")
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  save_kable("tweet_rp_pt_19.html")
 
 
 # Sort db based on likes
@@ -118,7 +123,9 @@ dust(tweet_lk_19) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_lk_sp_19.html")
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  save_kable("tweet_lk_pt_19.html")
 
 # 2021
 
@@ -134,7 +141,9 @@ dust(tweet_rt_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rt_sp_21.html")
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  save_kable("tweet_rt_sp_pt.html")
 
 # Sort db based on replies
 tweet_rp_21 <- tweet_score_21 %>%
@@ -148,7 +157,9 @@ dust(tweet_rp_21) %>%
   kable(align = "lll",
         format = "html") %>%
   kable_styling() %>%
-  save_kable("tweet_rp_sp_21.html")
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
+  save_kable("tweet_rp_pt_21.html")
 
 
 # Sort db based on likes
@@ -162,6 +173,8 @@ tweet_lk_21 <- tweet_score_21 %>%
 dust(tweet_lk_21) %>%
   kable(align = "lll",
         format = "html") %>%
+  row_spec(which(tweet_rt_19$verified == "Verified"), bold = F, color = "black", background = "#91ccd9") %>%
+  row_spec(which(tweet_rt_19$verified == "Not verified"), bold = F, color = "black", background = "#d2d991") %>%
   kable_styling() %>%
-  save_kable("tweet_lk_sp_21.html")
+  save_kable("tweet_lk_pt_21.html")
 
