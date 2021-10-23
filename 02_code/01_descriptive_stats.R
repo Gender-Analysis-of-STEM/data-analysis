@@ -25,6 +25,9 @@ library(dash)
 library(dampack)
 library(dygraphs)
 library(xts)
+library(tidyquant)
+
+source("https://raw.githubusercontent.com/iascchen/VisHealth/master/R/calendarHeat.R")
 
 
 # *****************************************************************************
@@ -230,3 +233,28 @@ like_2021 <- dygraph(rt_2021, main = "Likes (mean), 2021") %>%
              gridLineColor = "grey") %>%
   dyAxis(name = "y",
          label = "Likes (mean)") 
+
+
+es <- rbind(es_2019, es_2021)
+es <- es %>%
+  select(id, created_at) %>%
+  mutate(count = 1,
+         date = substr(es$created_at, 1, 10)) %>%
+  select(id, date, count) %>%
+  group_by(date) %>%
+  summarise(total = sum(count))
+
+w2b <- c("#045A8D", "#2B8CBE", "#74A9CF", "#BDC9E1", "#F1EEF6")
+calendarHeat(es$date, es$total, ncolors = 200, color = "w2b", varname="Total number of Tweets")
+
+pt <- rbind(pt_2019, pt_2021)
+pt <- pt %>%
+  select(id, created_at) %>%
+  mutate(count = 1,
+         date = substr(pt$created_at, 1, 10)) %>%
+  select(id, date, count) %>%
+  group_by(date) %>%
+  summarise(total = sum(count))
+
+w2b <- c("#045A8D", "#2B8CBE", "#74A9CF", "#BDC9E1", "#F1EEF6")
+calendarHeat(pt$date, pt$total, ncolors = 200, color = "w2b", varname="Total number of Tweets")

@@ -61,7 +61,7 @@ demog<-read.csv("Data/demog2019_2021_pt_sp.csv", encoding = "UTF-8")
 # *****************************************************************************
 
 tweet_score_19 <- tweet %>%
-  filter(File=="pt2019") %>%
+  filter(File=="es2019") %>%
   mutate(verified = case_when(user_verified == "True" ~ "Verified",
                               user_verified == "False" ~ "Not verified", 
                               user_verified == ""  ~ "Unknown")) %>%
@@ -69,7 +69,7 @@ tweet_score_19 <- tweet %>%
 
 
 tweet_score_21 <- tweet %>%
-  filter(File=="pt2021")  %>%
+  filter(File=="es2021")  %>%
   mutate(verified = case_when(user_verified == "True" ~ "Verified",
                               user_verified == "False" ~ "Not verified", 
                               user_verified == ""  ~ "Unknown")) %>%
